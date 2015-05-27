@@ -1,0 +1,63 @@
+The big picture:
+Application layer <-> Transport layer (TCP, UDP, STCP, raw socket) <-> Network layer (IP) <-> Data link <-> Physical
+
+UDP: 
+	- Simple transport layer protocol. 
+	- Flow: 
+		. The application writes a message to a UDP socket
+		-> The packet is then encapsulated in a UDP datagram
+		-> Encapsulated as an IP datagram
+		-> Be sent to the destination
+	- Unreliable:
+		. There's no guarantee:
+			. The packet reached the destination
+			. Packets arrived in correct order
+		. If a packet get lost, no retransmission is activated.
+		. Each datagram has a length packed with it, send to the receiving application.
+		. Connectionless service: 
+			. No long-term relationship between client and server
+			. Client can send datagram to 1 server then immediately send another datagram to another server.
+
+TCP:
+	- Provide reliable connections between servers and clients:
+		. When TCP sends data to the other end, it requires an acknowledgement in return
+			. If ACK not return -> Retransmit the data, and waits for a longer amount of time:
+				> TCP contains estimation of RTT -> estimate waiting time
+			. Give up after a number of times of retransmission
+		. Sequences the data to reordering packets:
+			> Associate a sequence number with everybyte that it sends
+			> Detect duplicate packets
+		. Flow control:
+			> It tells its peers how many data it's willing to accept
+			> The data cannot be overflowed, if the current amount is 0 -> need to wait until the server's done its processing
+		. Full-duplex:
+			> Send and receive data in both directions
+			> Need to keep track the states of the connection in both directions (sequence number, window size)
+
+
+Three-way handshake:
+	1. The server prepared to accept connections (socket, bind, listen): passive open
+	2. The client issues an active open by calling 'connect':
+		. Client TCP sends a SYN segment, includes:
+			> Initial sequence number for the data to be sent
+			> Possible TCP options
+			> No data
+	3. The server sends its SYN and sends ACK of the client's SYN in a single segment
+	4. The client must send back ACK to the server
+
+Terminating:
+	1. One end sends a FIN tag
+	2. The other sends an ACK with another FIN tag
+	3. Sends back ACK
+
+
+Fork():
+	- Fork child process
+	- Return pid > 0 in the parent, indicate the program id of the child process
+	- Return 0 in the child process itself
+
+
+
+
+
+
