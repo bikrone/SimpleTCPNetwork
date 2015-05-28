@@ -4,20 +4,26 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../daytime_server.c \
-../echo_server.c 
+../library/error.c \
+../library/file_helper.c \
+../library/wrap_sock.c \
+../library/wrap_unix.c 
 
 OBJS += \
-./daytime_server.o \
-./echo_server.o 
+./library/error.o \
+./library/file_helper.o \
+./library/wrap_sock.o \
+./library/wrap_unix.o 
 
 C_DEPS += \
-./daytime_server.d \
-./echo_server.d 
+./library/error.d \
+./library/file_helper.d \
+./library/wrap_sock.d \
+./library/wrap_unix.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-%.o: ../%.c
+library/%.o: ../library/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C Compiler'
 	gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"

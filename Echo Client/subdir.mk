@@ -4,16 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../daytime_server.c \
-../echo_server.c 
+../echo_client.c 
 
 OBJS += \
-./daytime_server.o \
-./echo_server.o 
+./echo_client.o 
 
 C_DEPS += \
-./daytime_server.d \
-./echo_server.d 
+./echo_client.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

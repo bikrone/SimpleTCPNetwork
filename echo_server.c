@@ -1,38 +1,58 @@
 /*
- * daytime_server.c
+ * echo_server.c
  *
- *  Created on: May 27, 2015
+ *  Created on: May 28, 2015
  *      Author: khanh
  */
 
 #include "library/socket_helper.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
-int main(int argc, char *argv[]) {
+void echo_to_socket(int fd, char *buff) {
+    ssize_t n;
+    while (1) {
+	while ((n = read(fd, buff, sizeof buff)) > 0) {
+	    buff[n] = '\0';
+	    write(fd, buff, strlen(buff));
+	    printf("%s", buff);
+	    if (strcmp(buff, "quit") == 0) {
+		exit(0);
+	    }
+	}
+
+	if (n<0) {
+	    if (errno == EINTR) continue;
+	    err_sys("server: read error");
+	}
+
+	break;
+    }
+
+}
+
+int main(int argc, char **argv) {
     char *port = "1337";
     int listening_fd, connecting_fd;
-    struct sockaddr_in server_address;
-    struct sockaddr_storage incoming_address;
+    struct sockaddr_in server_address, incoming_address;
     socklen_t incoming_address_length;
     char incoming_ip_address[INET6_ADDRSTRLEN];
     char buff[MAXLINE];
-    time_t ticks;
+    pid_t child_pid;
 
     // options configuring
     if (argc > 1) {
 	int i;
-	for (i=0; i< argc; i++) {
-	    // checking port argument
-	    if (strcmp(argv[i], "-p") == 0) {
-		if (++i >= argc) {
-		    err_quit("The open port is not specified");
-		} else {
-		    port = argv[i];
-		}
-	    }
-	}
+    	for (i=0; i< argc; i++) {
+    	    // checking port argument
+    	    if (strcmp(argv[i], "-p") == 0) {
+    		if (++i >= argc) {
+    		    err_quit("The open port is not specified");
+    		} else {
+    		    port = argv[i];
+    		}
+    	    }
+    	}
     }
 
     // configuring server_address
@@ -50,17 +70,22 @@ int main(int argc, char *argv[]) {
     printf("Successfully created server listening on port %s\n\n", port);
 
     incoming_address_length = sizeof incoming_address;
+
     // Receive connections
     for (;;) {
 	connecting_fd = Accept(listening_fd, (SA *)&incoming_address, &incoming_address_length);
-	inet_ntop(incoming_address.ss_family, Get_in_addr((SA *)&incoming_address), incoming_ip_address, sizeof incoming_ip_address);
+	inet_ntop(incoming_address.sin_family, &(incoming_address.sin_addr), incoming_ip_address, sizeof incoming_ip_address);
 	printf("Got a connection from %s\r\n", incoming_ip_address);
-	ticks = time(NULL);
-	snprintf(buff, sizeof buff, "%.24s\r\n", ctime(&ticks));
-	Write(connecting_fd, buff, strlen(buff));
 
+
+	// create child process
+	if ((child_pid = fork()) == 0) {
+	    Close(listening_fd);
+	    while (1) {
+		echo_to_socket(connecting_fd, buff);
+
+	    }
+	}
 	Close(connecting_fd);
     }
 }
-
-
