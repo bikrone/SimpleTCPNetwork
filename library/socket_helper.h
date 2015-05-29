@@ -450,6 +450,7 @@ void	*Mmap(void *, size_t, int, int, int, off_t);
 int		 Open(const char *, int, mode_t);
 void	 Pipe(int *fds);
 ssize_t	 Read(int, void *, size_t);
+ssize_t Read_no_throw(int fd, char *buff);
 void	 Sigaddset(sigset_t *, int);
 void	 Sigdelset(sigset_t *, int);
 void	 Sigemptyset(sigset_t *);

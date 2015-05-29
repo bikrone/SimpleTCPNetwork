@@ -146,6 +146,23 @@ Read(int fd, void *ptr, size_t nbytes)
 	return(n);
 }
 
+ssize_t
+Read_no_throw(int fd, char *buff)
+{
+    ssize_t n;
+    while (1) {
+    	n = read(fd, buff, sizeof buff);
+    	if (n<0) {
+    	    if (errno == EINTR) continue;
+    	    return -1;
+    	}
+    	if (n==0) return n;
+    	buff[n] = '\0';
+    	break;
+    }
+    return n;
+}
+
 void
 Sigaddset(sigset_t *set, int signo)
 {

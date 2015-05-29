@@ -4,23 +4,26 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../chat_client.c \
-../chat_server.c \
-../echo_client.c 
+../library/error.c \
+../library/file_helper.c \
+../library/wrap_sock.c \
+../library/wrap_unix.c 
 
 OBJS += \
-./chat_client.o \
-./chat_server.o \
-./echo_client.o 
+./library/error.o \
+./library/file_helper.o \
+./library/wrap_sock.o \
+./library/wrap_unix.o 
 
 C_DEPS += \
-./chat_client.d \
-./chat_server.d \
-./echo_client.d 
+./library/error.d \
+./library/file_helper.d \
+./library/wrap_sock.d \
+./library/wrap_unix.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-%.o: ../%.c
+library/%.o: ../library/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C Compiler'
 	gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
