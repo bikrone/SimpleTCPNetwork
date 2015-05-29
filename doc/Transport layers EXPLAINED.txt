@@ -30,9 +30,11 @@ TCP:
 		. Flow control:
 			> It tells its peers how many data it's willing to accept
 			> The data cannot be overflowed, if the current amount is 0 -> need to wait until the server's done its processing
+			> Each field by window size = 16 bits 
 		. Full-duplex:
 			> Send and receive data in both directions
-			> Need to keep track the states of the connection in both directions (sequence number, window size)
+			> Need to keep track the states of the connection in both directions (sequence number, window size)	
+
 
 
 Three-way handshake:
@@ -49,7 +51,8 @@ Terminating:
 	1. One end sends a FIN tag
 	2. The other sends an ACK with another FIN tag
 	3. Sends back ACK
-
+	- The TIME_WAIT state remains 2*maximum segment lifetime:
+		. Keep the port, (if new server )
 
 Fork():
 	- Fork child process
