@@ -57,7 +57,8 @@ Fork():
 	- Return 0 in the child process itself
 
 
-
-
-
-
+I/O block issue:
+	- Non-blocking I/O: keep checking, return EWOULDBLOCK if the fd is not ready
+	- I/O Multiplexing: using select to block a group of fds, return when one of them is ready
+	- Signal: using kernel signal, notify if there's a fd is ready
+	- Asynchronus I/O: do the I/O but would not block the process, notify if the I/O is completed.
