@@ -8,6 +8,85 @@
 #include "library/socket_helper.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <aio.h>
+#include <errno.h>
+#include <signal.h>
+#include <unistd.h>
+
+#define SIG_AIO SIGRTMIN+5
+#define BUFF_SIZE 10
+
+struct aiocb *cbs[2];
+char *buffer[2];
+
+int sock_fd;
+
+
+void aio_handler(int signal, siginfo_t *info, void *uap) {
+	//printf("im here\n");
+	int cbIndex = info->si_value.sival_int;
+	int data_length = aio_return(cbs[cbIndex]);;
+
+	buffer[cbIndex][data_length] = 0;
+
+	if (cbIndex == 0) {
+		// read from input
+		write(sock_fd, buffer[0], data_length);
+
+		aio_read(cbs[0]);
+	} else if (cbIndex == 1) {
+		// read from socket
+		if (fputs(buffer[1], stdout) == EOF) {
+			err_sys("fputs error");
+		}
+		aio_read(cbs[1]);
+	}
+}
+
+void init_aiocb(int sock_fd) {
+	cbs[0] = calloc(1, sizeof (struct aiocb));
+	cbs[1] = calloc(1, sizeof (struct aiocb));
+
+	memset(cbs[0], 0, sizeof (struct aiocb));
+	memset(cbs[1], 0, sizeof (struct aiocb));
+
+	cbs[0]->aio_fildes = 0;
+	buffer[0] = calloc(1, BUFF_SIZE);
+	cbs[0]->aio_buf = buffer[0];
+	cbs[0]->aio_nbytes = BUFF_SIZE;
+	cbs[0]->aio_offset = 0;
+	cbs[0]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
+	cbs[0]->aio_sigevent.sigev_signo = SIG_AIO;
+	cbs[0]->aio_sigevent.sigev_value.sival_int = 0;
+
+	cbs[1]->aio_fildes = sock_fd;
+	buffer[1] = calloc(1, BUFF_SIZE);
+	cbs[1]->aio_buf = buffer[1];
+	cbs[1]->aio_nbytes = BUFF_SIZE;
+	cbs[1]->aio_offset = 0;
+	cbs[1]->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
+	cbs[1]->aio_sigevent.sigev_signo = SIG_AIO;
+	cbs[1]->aio_sigevent.sigev_value.sival_int = 1;
+
+}
+
+void setup_action() {
+	struct sigaction action;
+	action.sa_sigaction = aio_handler;
+	action.sa_flags = SA_SIGINFO;
+	sigemptyset(&action.sa_mask);
+	sigaction(SIG_AIO, &action, NULL);
+}
+
+void str_cli_asynchronous(int socket_fd) {
+	setup_action();
+	init_aiocb(socket_fd);
+
+	aio_read(cbs[0]);
+	aio_read(cbs[1]);
+
+	while (1) { sleep(1); }
+}
 
 void str_cli_non_block(int socket_fd) {
     char data_received[MAXLINE+1], data_send[MAXLINE+1];
@@ -107,15 +186,16 @@ int main(int argc, char **argv) {
 
     // create socket file descriptor
     socket_fd = Socket(server_address.sin_family, SOCK_STREAM, 0);
+    sock_fd = socket_fd;
     if (socket_fd < 0) {
-	err_sys("socket error");
+    	err_sys("socket error");
     }
     
 
     if (connect(socket_fd, (SA *)&server_address, sizeof server_address)< 0) {
     	err_sys("connect error");
     }
-    str_cli_non_block(socket_fd);
+    str_cli_asynchronous(socket_fd);
 
     exit(0);
 }

@@ -359,7 +359,7 @@
 								<option id="gnu.c.compiler.option.misc.other.1859160883" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 " valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1245222511" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1232642364" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug">
+							<tool commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX} ${OUTPUT} ${INPUTS} -lrt" id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1232642364" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug">
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.169309953" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -371,9 +371,6 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.exe.debug.1510020972.419640630.841249505" name="echo_server.c" rcbsApplicability="disable" resourcePath="echo_server.c" toolsToInvoke="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1961348285.1360986531">
-						<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1961348285.1360986531" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1961348285"/>
-					</fileInfo>
 					<sourceEntries>
 						<entry excluding="echo_server.c|echo_client.c|daytime_server.c|daytime_client.c|chat_server.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
@@ -413,4 +410,5 @@
 		</configuration>
 		<configuration configurationName="ChatServer"/>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

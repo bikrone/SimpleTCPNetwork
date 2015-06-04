@@ -65,3 +65,13 @@ I/O block issue:
 	- I/O Multiplexing: using select to block a group of fds, return when one of them is ready
 	- Signal: using kernel signal, notify if there's a fd is ready
 	- Asynchronus I/O: do the I/O but would not block the process, notify if the I/O is completed.
+
+
+THREAD:
+	- Thread ID
+	- Set of register values
+	- A stack
+	- A scheduling priority and policy
+	- A signal mask
+	- An errno variable
+	- Thread specific data

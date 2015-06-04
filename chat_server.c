@@ -148,7 +148,7 @@ void handle_server_multiplexing(int server_fd) {
     FD_SET(0, &master);
 
     for (;;) {
-
+    	readfds = master;
 		if (select(fd_max+1, &readfds, NULL, NULL, NULL) == -1) {
 		    err_sys("server: select");
 		}
@@ -174,7 +174,7 @@ void handle_server_multiplexing(int server_fd) {
 
 		    	// get the client_ip_address
 		    	inet_ntop(client_address.sin_family, &(client_address.sin_addr), client_ip_address, sizeof client_ip_address);
-		    	printf("*** We've got a new connection from %s ***\n", client_ip_address);
+		    	printf("\n*** We've got a new connection from %s ***\n", client_ip_address);
 		    }
 		}
 
@@ -250,7 +250,7 @@ int main(int argc, char **argv) {
 
     printf("Server's starting listen on port %s\n\n", port);
 
-    handle_server_non_block(server_fd);
+    handle_server_multiplexing(server_fd);
 
     return 0;
 }
