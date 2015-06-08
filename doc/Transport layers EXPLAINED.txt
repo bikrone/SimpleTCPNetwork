@@ -75,3 +75,29 @@ THREAD:
 	- A signal mask
 	- An errno variable
 	- Thread specific data
+
+SIGNAL:
+	- Software Interupt
+	- Concept:
+		. Start with SIG
+		. System defined signals
+		. Application defined signals
+
+
+Inter process communication:
+	- Send SIGNAL to other process using kill() 
+	- Using pipe: 
+		. 1 end to read, 1 end to write
+	- Using FIFO file:
+		. Using mknod(FIFO_NAME, S_IFIFO | 0666, 0); function to create a file for communication between process
+		. Like pipe() but unrelated processes can connect to 1 file.
+	- File locking:
+		. Read lock & write lock using struct flock and fcntl() function
+	- Message queues:
+		. Like FIFO
+		. Create a key using ftok() function
+		. Get message queue from key using msgget() function
+		. Send any kind of structure by msgsnd() function
+	- Semaphores:
+	- Shared memory segments:
+		. Get a pointer to shared memory segment that everybody can access
